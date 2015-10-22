@@ -1,0 +1,40 @@
+{
+  "name": "earsdown-certmonger",
+  "version": "1.0",
+  "author": "earsdown",
+  "summary": "Certmonger puppet module for integration with IPA CAs",
+  "license": "Apache-2.0",
+  "source": "https://github.com/earsdown/puppet-certmonger",
+  "project_page": "https://github.com/earsdown/puppet-certmonger",
+  "issues_url": "https://github.com/earsdown/puppet-certmonger/issues",
+  "description": "Certmonger puppet module for integration with IPA CAs",
+  "dependencies": [
+    {"name":"puppetlabs/stdlib","version_requirement":">= 2.4.0 < 5.0.0"}
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": "3.x"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": ">=2.7.20 <5.0.0"
+    }
+  ]
+}
