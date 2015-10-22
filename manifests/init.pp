@@ -1,11 +1,12 @@
+# Class: certmonger
 class certmonger {
 
-  package { 'certmonger': 
+  package { 'certmonger':
     ensure => 'present',
   } ->
   service { 'certmonger':
-    ensure  => 'running',
-    enable  => true,
+    ensure => 'running',
+    enable => true,
   }
 
   file { '/etc/ipa/verify_certmonger_request.sh':
