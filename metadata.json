@@ -1,6 +1,6 @@
 {
   "name": "earsdown-certmonger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "earsdown",
   "summary": "Certmonger puppet module for integration with IPA CAs",
   "license": "Apache-2.0",
@@ -30,7 +30,7 @@
   "requirements": [
     {
       "name": "pe",
-      "version_requirement": "3.x"
+      "version_requirement": ">=3.0.0"
     },
     {
       "name": "puppet",
