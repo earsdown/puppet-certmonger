@@ -15,7 +15,7 @@ certmonger::request_ipa_cert { 'server-crt':
 
 ## Parameters:
 * `$certfile` - (required; String) - Full path of certificate to be managed by certmonger. e.g. `/path/to/certificate.crt`
-* `$keyfile` - (required; String) - Full path to private key file to be manaegd by certmonger. e.g. `/path/to/key.pem`
+* `$keyfile` - (required; String) - Full path to private key file to be managed by certmonger. e.g. `/path/to/key.pem`
 * `$hostname` - (optional; String) - Hostname to use (appears in subject field of cert). e.g. `webserver.example.com`
 * `$principal` - (optional; String) - IPA service principal certmonger should use when requesting cert. 
    e.g. `HTTP/webserver.example.com`.
@@ -67,4 +67,11 @@ certmonger::request_ipa_cert { 'server-crt':
   }
 ```
 
+## Contributing
+* Fork it
+* Create a topic branch
+* Make your changes
+* Submit a PR
+
+## Acknowledgements
 Honorable mention goes out to Rob Crittenden for his work on https://github.com/rcritten/puppet-certmonger, which was used as inspiration for this module.
