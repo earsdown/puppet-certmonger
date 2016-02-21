@@ -14,18 +14,18 @@ certmonger::request_ipa_cert { 'server-crt':
 > Note: there is no need to use the `certmonger` class, it gets included by the define and has no parameters of its own.
 
 ## Parameters:
-* `$certfile` - (required; String) - Full path of certificate to be managed by certmonger. e.g. `/path/to/certificate.crt`
-* `$keyfile` - (required; String) - Full path to private key file to be managed by certmonger. e.g. `/path/to/key.pem`
-* `$hostname` - (optional; String) - Hostname to use (appears in subject field of cert). e.g. `webserver.example.com`
-* `$principal` - (optional; String) - IPA service principal certmonger should use when requesting cert. 
+* `certfile` - (required; String) - Full path of certificate to be managed by certmonger. e.g. `/path/to/certificate.crt`
+* `keyfile` - (required; String) - Full path to private key file to be managed by certmonger. e.g. `/path/to/key.pem`
+* `hostname` - (optional; String) - Hostname to use (appears in subject field of cert). e.g. `webserver.example.com`
+* `principal` - (optional; String) - IPA service principal certmonger should use when requesting cert. 
    e.g. `HTTP/webserver.example.com`.
-* `$dns` - (optional; String or Array) - DNS subjectAltNames to be present in the certificate request.
+* `dns` - (optional; String or Array) - DNS subjectAltNames to be present in the certificate request.
                                      Can be a string (use commas or spaces to separate values) or an array.  
                                      e.g. `ssl.example.com webserver01.example.com`  
                                      e.g. `ssl.example.com, webserver01.example.com`  
                                      e.g. `["ssl.example.com","webserver01.example.com"]`  
-* `$presavecmd`  - (optional; String) - Command certmonger should run before saving the certificate
-* `$postsavecmd` - (optional; String) - Command certmonger should run after saving the certificate
+* `presavecmd`  - (optional; String) - Command certmonger should run before saving the certificate
+* `postsavecmd` - (optional; String) - Command certmonger should run after saving the certificate
 
 ## Actions:
 * Submits a certificate request to an IPA server for a new certificate via `ipa-getcert` utility
@@ -40,7 +40,8 @@ certmonger::request_ipa_cert { 'server-crt':
   (maybe you can help by developing a custom type and provider?)
 * Only supports file-based certificates (i.e. no support for NSSDB).
 * Does not manage the nickname, IP address, email, keyusage, extusage, etc features.
-* Only manages subject, dns (subjectAltNames), principal, pre/post save commands
+* Only manages subject, dns (subjectAltNames), principal, pre/post save commands.
+* Only manages the principal if it appears in the issued certificate - which depends on your CA profile.
 * Subject is hardcoded to `CN=$hostname`.
 * Only works if being run on a system already joined to an IPA domain, and only works against IPA CAs.
 * If you specify a hostname and don't specify a principal, this module will assume you want `host/$hostname`.
