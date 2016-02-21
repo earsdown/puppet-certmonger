@@ -69,7 +69,7 @@ fi
 if echo "$output" | grep -q '^\s*subject:' && [ -n "$subject" ]; then
 
   # take output of ipa-getcert list | grep subject | strip off the 'subject:' and ,O=REALM part
-  output_subject="$(echo "$output" | grep '^\s*subject:' | sed -e 's/^\s*subject:\s*//g;s/,O=.*$//g')"
+  output_subject="$(echo "$output" | grep '^\s*subject:' | sed -e 's/^\s*subject:\s*//g;s/,O[U]*=.*$//g')"
   if [ "$output_subject" != "$subject" ]; then
     exit 4
   fi
