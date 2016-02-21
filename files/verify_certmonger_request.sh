@@ -62,7 +62,8 @@ if echo "$output" | grep -q '^\s*principal name:' && [ -n "$principal" ]; then
     exit 3
   fi
 elif [ -n "$principal" ]; then
-  exit 3
+  # Update 2016-02-21: Depending on the CA profile, the principal wont always appear in the output
+  #exit 3
 fi
 
 # Is the expected subject the same as whats already in the certrequest?
