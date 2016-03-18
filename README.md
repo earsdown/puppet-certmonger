@@ -6,8 +6,8 @@
 
 ```puppet
 certmonger::request_ipa_cert { 'server-crt':
-  $certfile => '/etc/pki/tls/certs/server.crt',
-  $keyfile  => '/etc/pki/tls/private/server.key',
+  certfile => '/etc/pki/tls/certs/server.crt',
+  keyfile  => '/etc/pki/tls/private/server.key',
 }
 ```
 
