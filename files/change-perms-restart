@@ -1,0 +1,56 @@
+#!/bin/bash
+
+unset options services syslog
+
+case "$(id -nu)" in
+  root) ;;
+  *) echo "ERROR: $(basename $0) must be executed as root. Cannot run as $(id -nu)." >&2 ; exit 3 ;;
+esac
+
+usage () {
+  echo "Utility to change file/folder owner/group/mode and restart a list of services. For use with ipa-getcert as a post-save command." >&2
+  echo "Usage: $(basename $0) [ -R] [ -r 'service1 service2' ] [ -s facility.severity ] owner:group:modes:/path/to/file [ ... ]" >&2
+  echo "   -R     change ownership/group/modes recursively (e.g. when specifying a folder)" >&2
+  echo "   -r     space separated list of services to restart via systemctl" >&2
+  echo "   -s     log output (if any) to syslog with specified facility/severity" >&2
+  echo "Example: $(basename $0) -R -s daemon.notice -r 'httpd postgresql' root:pkiuser:0644:/etc/pki/tls/certs/localhost.crt root:pkiuser:0600:/etc/pki/tls/private/localhost.key" >&2
+}
+
+while getopts ":Rr:s:" opt; do
+  case "$opt" in
+    R) options="-R"
+       ;;
+    r) services="$OPTARG"
+       ;;
+    s) syslog="$OPTARG"
+       ;;
+    *) usage ; exit 1
+       ;;
+  esac
+done
+
+log() {
+  if [ -n "$syslog" ]; then
+    echo "$@" | while read line; do
+      logger -p "$syslog" -i -t "$(basename $0)" "$line"
+    done
+  else
+    echo "$@"
+  fi
+}
+
+shift "$((OPTIND-1))"
+
+if [ -z "$1" ]; then usage ; exit 1 ; fi
+
+for i in $@; do
+  ownergroup="$(echo "$i" | cut -f1,2 -d:)"
+  mode="$(echo "$i" | cut -f3 -d:)"
+  file="$(echo "$i" | cut -f4 -d:)"
+  log "$(chown $options $ownergroup $file 2>&1)"
+  log "$(chmod $options $mode $file 2>&1)"
+done
+
+for service in $services; do
+  log "$(systemctl restart $service 2>&1)"
+done

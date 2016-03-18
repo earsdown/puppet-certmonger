@@ -2,18 +2,19 @@
 # Request a new certificate from IPA (via certmonger) using a puppet define
 #
 # # Parameters:
-# * `$certfile` - (required; String) - Full path of certificate to be managed by certmonger. e.g. `/path/to/certificate.crt`
-# * `$keyfile` - (required; String) - Full path to private key file to be manaegd by certmonger. e.g. `/path/to/key.pem`
-# * `$hostname` - (optional; String) - Hostname to use (appears in subject field of cert). e.g. `webserver.example.com`
-# * `$principal` - (optional; String) - IPA service principal certmonger should use when requesting cert.
-#    e.g. `HTTP/webserver.example.com`.
-# * `$dns` - (optional; String or Array) - DNS subjectAltNames to be present in the certificate request.
+# * `certfile`    (required; String) - Full path of certificate to be managed by certmonger. e.g. `/path/to/certificate.crt`
+# * `keyfile`     (required; String) - Full path to private key file to be manaegd by certmonger. e.g. `/path/to/key.pem`
+# * `hostname`    (optional; String) - Hostname to use (appears in subject field of cert). e.g. `webserver.example.com`
+# * `principal`   (optional; String) - IPA service principal certmonger should use when requesting cert.
+#                                      e.g. `HTTP/webserver.example.com`.
+# * `dns`         (optional; String or Array) - DNS subjectAltNames to be present in the certificate request.
 #                                      Can be a string (use commas or spaces to separate values) or an array.
 #                                      e.g. `ssl.example.com webserver01.example.com`
 #                                      e.g. `ssl.example.com, webserver01.example.com`
 #                                      e.g. `["ssl.example.com","webserver01.example.com"]`
-# * `$presavecmd`  - (optional; String) - Command certmonger should run before saving the certificate
-# * `$postsavecmd` - (optional; String) - Command certmonger should run after saving the certificate
+# * `presavecmd`  (optional; String) - Command certmonger should run before saving the certificate
+# * `postsavecmd` (optional; String) - Command certmonger should run after saving the certificate
+# * `profile`     (optional; String) - Ask the CA to process request using the named profile. e.g. `caIPAserviceCert`
 #
 define certmonger::request_ipa_cert (
   $certfile,
@@ -23,6 +24,7 @@ define certmonger::request_ipa_cert (
   $dns         = undef,
   $presavecmd  = undef,
   $postsavecmd = undef,
+  $profile     = undef,
 ) {
   include ::certmonger
   include ::stdlib
@@ -72,7 +74,7 @@ define certmonger::request_ipa_cert (
 
   if $presavecmd { $options_presavecmd = "-B '${presavecmd}'" } else { $options_presavecmd = '' }
   if $postsavecmd { $options_postsavecmd = "-C '${postsavecmd}'" } else { $options_postsavecmd = '' }
-
+  if $profile { $options_profile = "-T '${profile}'" } else { $options_profile = '' }
 
   exec { "ipa-getcert-${certfile}-trigger":
     path    => '/usr/bin:/bin',
@@ -91,7 +93,7 @@ define certmonger::request_ipa_cert (
     command     => "rm -rf ${keyfile} ${certfile} ; mkdir -p `dirname ${keyfile}` `dirname ${certfile}` ;
                     ipa-getcert stop-tracking ${options_certfile} ;
                     ipa-getcert request ${options} ${options_subject} ${options_principal} ${options_dns} \
-                    ${options_presavecmd} ${options_postsavecmd}",
+                    ${options_presavecmd} ${options_postsavecmd} ${options_profile}",
     unless      => "${verifyscript} ${options}",
     notify      => Exec["ipa-getcert-${certfile}-verify"],
     require     => [Service['certmonger'],File[$verifyscript]],
@@ -102,7 +104,7 @@ define certmonger::request_ipa_cert (
     path        => '/usr/bin:/bin',
     provider    => 'shell',
     command     => "ipa-getcert resubmit ${options_certfile} ${options_subject} ${options_principal} ${options_dns} \
-                    ${options_presavecmd} ${options_postsavecmd}",
+                    ${options_presavecmd} ${options_postsavecmd} ${options_profile}",
     unless      => "${verifyscript} ${options_certfile} ${options_subject} ${options_principal} ${options_dns_csv} \
                     ${options_presavecmd} ${options_postsavecmd}",
     onlyif      => ["${verifyscript} ${options}","openssl x509 -in ${certfile} -noout"],
