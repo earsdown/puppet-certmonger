@@ -1,6 +1,14 @@
 # Class: certmonger::scripts
-class certmonger::scripts {
-  file { '/etc/ipa/verify_certmonger_request.sh':
+#
+# # Parameters:
+# * `verifyscript` (optional; String) - Full path of the script used for
+#                                       verification of certificate requests
+#   Defaults to '/etc/ipa/verify_certmonger_request.sh'
+class certmonger::scripts (
+  $verifyscript = '/etc/ipa/verify_certmonger_request.sh',
+) {
+
+  file { $verifyscript:
     ensure => 'present',
     owner  => 'root',
     group  => 'root',
