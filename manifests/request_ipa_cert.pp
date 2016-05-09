@@ -27,6 +27,7 @@ define certmonger::request_ipa_cert (
   $profile     = undef,
 ) {
   include ::certmonger
+  include ::certmonger::scripts
   include ::stdlib
 
   validate_string($certfile, $keyfile)
