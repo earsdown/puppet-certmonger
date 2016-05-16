@@ -105,9 +105,10 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
     if @property_flush[:ensure] == :absent
       getcert(['stop-tracking', '-i', resource[:name]])
     else
-      if @property_hash[:status] == "MONITORING"
-        output = getcert(['list', '-i', resource[:name]])
-        @property_hash = self.class.parse_cert_list(output)
+      if @property_hash
+        if resource[:force_resubmit]
+          getcert(['resubmit', '-i', resource[:name]])
+        end
       else
         request_args = get_request_args resource
 
@@ -118,15 +119,10 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
           Puppet.warning("Could not get certificate: #{msg}")
         end
 
-        begin
-          output = getcert(['list', '-i', resource[:name]])
-          @property_hash = self.class.parse_cert_list(output)[0]
-        rescue
-          raise Puppet::Error, ("The certificate '#{resource[:name]}' was " +
-                                "not created.")
-        end
-        finish_and_cleanup resource
       end
+
+      refresh resource
+      cleanup resource
     end
   end
 
@@ -169,7 +165,17 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
     return request_args
   end
 
-  def finish_and_cleanup(resource)
+  def refresh(resource)
+    begin
+      output = getcert(['list', '-i', resource[:name]])
+      @property_hash = self.class.parse_cert_list(output)[0]
+    rescue
+      raise Puppet::Error, ("The certificate '#{resource[:name]}' wasn't " +
+                            "found in the list.")
+    end
+  end
+
+  def cleanup(resource)
     if @property_hash[:ca_error]
       if resource[:cleanup_on_error]
         getcert(['stop-tracking', '-i', resource[:name]])

@@ -134,6 +134,12 @@ Puppet::Type.newtype(:certmonger_certificate) do
           "the request.")
   end
 
+  newparam(:force_resubmit, :boolean => true,
+           :parent => Puppet::Parameter::Boolean) do
+    desc "If the request is found, force a resubmit operation."
+    defaultto :false
+  end
+
   newparam(:wait, :boolean => true, :parent => Puppet::Parameter::Boolean) do
     desc "Try to wait for the certificate to be isued."
     defaultto :true
