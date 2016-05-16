@@ -70,6 +70,9 @@ Puppet::Type.newtype(:certmonger_certificate) do
     TODO: Give the user the option to issue a failure in puppet if the CA
     rejects the request.
   }
+
+  require 'puppet/parameter/boolean'
+
   ensurable
   newparam(:name) do
     desc "The nickname of the certificate request."
@@ -124,5 +127,27 @@ Puppet::Type.newtype(:certmonger_certificate) do
 
   newproperty(:certbackend) do
     desc "The backend being used for storing the certificate."
+  end
+
+  newproperty(:ca_error) do
+    desc ("The error info provided in case the CA reported an error with " +
+          "the request.")
+  end
+
+  newparam(:wait, :boolean => true, :parent => Puppet::Parameter::Boolean) do
+    desc "Try to wait for the certificate to be isued."
+    defaultto :true
+  end
+
+  newparam(:ignore_ca_errors, :boolean => true,
+           :parent => Puppet::Parameter::Boolean) do
+    desc "Ignore errors related to the CA."
+    defaultto :false
+  end
+
+  newparam(:cleanup_on_error, :boolean => true,
+           :parent => Puppet::Parameter::Boolean) do
+    desc "Stop tracking if an error is reported by the CA."
+    defaultto :false
   end
 end

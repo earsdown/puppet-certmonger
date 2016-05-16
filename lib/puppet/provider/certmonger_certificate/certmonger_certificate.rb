@@ -75,6 +75,8 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
           end
         when /^\s+dns: .*/
           current_cert[:dnsname] = line.match(/dns: (.*)/)[1]
+        when /^\s+ca-error: .*/
+          current_cert[:ca_error] = line.match(/ca-error: (.*)/)[1]
         end
       end
     end
@@ -107,39 +109,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
         output = getcert(['list', '-i', resource[:name]])
         @property_hash = self.class.parse_cert_list(output)
       else
-        request_args = ['request', '-I', resource[:name]]
-        if resource[:certfile]
-          request_args << '-f'
-          request_args << resource[:certfile]
-        else
-          raise ArgumentError, "An empty value for the certfile is not allowed"
-        end
-        if resource[:keyfile]
-          request_args << '-k'
-          request_args << resource[:keyfile]
-        else
-          raise ArgumentError, "An empty value for the keyfile is not allowed"
-        end
-        if resource[:ca]
-          request_args << '-c'
-          request_args << resource[:ca]
-        else
-          raise ArgumentError, "You need to specify a CA"
-        end
-        if resource[:hostname]
-          request_args << '-N'
-          request_args << "CN=#{resource[:hostname]}"
-        end
-        if resource[:principal]
-          request_args << '-K'
-          request_args << resource[:principal]
-        end
-        if resource[:dnsname]
-          request_args << '-D'
-          request_args << resource[:dnsname]
-        end
-
-        request_args << '-w'
+        request_args = get_request_args resource
 
         begin
           Puppet.debug("Issuing getcert command with args: #{request_args}")
@@ -150,11 +120,63 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
 
         begin
           output = getcert(['list', '-i', resource[:name]])
-          @property_hash = self.class.parse_cert_list(output)
+          @property_hash = self.class.parse_cert_list(output)[0]
         rescue
           raise Puppet::Error, ("The certificate '#{resource[:name]}' was " +
                                 "not created.")
         end
+        finish_and_cleanup resource
+      end
+    end
+  end
+
+  def get_request_args(resource)
+    request_args = ['request', '-I', resource[:name]]
+    if resource[:certfile]
+      request_args << '-f'
+      request_args << resource[:certfile]
+    else
+      raise ArgumentError, "An empty value for the certfile is not allowed"
+    end
+    if resource[:keyfile]
+      request_args << '-k'
+      request_args << resource[:keyfile]
+    else
+      raise ArgumentError, "An empty value for the keyfile is not allowed"
+    end
+    if resource[:ca]
+      request_args << '-c'
+      request_args << resource[:ca]
+    else
+      raise ArgumentError, "You need to specify a CA"
+    end
+    if resource[:hostname]
+      request_args << '-N'
+      request_args << "CN=#{resource[:hostname]}"
+    end
+    if resource[:principal]
+      request_args << '-K'
+      request_args << resource[:principal]
+    end
+    if resource[:dnsname]
+      request_args << '-D'
+      request_args << resource[:dnsname]
+    end
+
+    if resource[:wait]
+      request_args << '-w'
+    end
+    return request_args
+  end
+
+  def finish_and_cleanup(resource)
+    if @property_hash[:ca_error]
+      if resource[:cleanup_on_error]
+        getcert(['stop-tracking', '-i', resource[:name]])
+      end
+      if not resource[:ignore_ca_errors]
+        raise Puppet::Error, ("Could not get certificate: " +
+                              "#{@property_hash[:ca_error]}")
       end
     end
   end
