@@ -77,6 +77,11 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
           current_cert[:dnsname] = line.match(/dns: (.*)/)[1]
         when /^\s+ca-error: .*/
           current_cert[:ca_error] = line.match(/ca-error: (.*)/)[1]
+        when /^\s+pre-save command: .*/
+          current_cert[:presave_cmd] = line.match(/pre-save command: (.*)/)[1]
+        when /^\s+post-save command: .*/
+          current_cert[:postsave_cmd] = line.match(
+            /post-save command: (.*)/)[1]
         end
       end
     end
@@ -155,6 +160,14 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
     if resource[:dnsname]
       request_args << '-D'
       request_args << resource[:dnsname]
+    end
+    if resource[:presave_cmd]
+      request_args << '-B'
+      request_args << resource[:presave_cmd]
+    end
+    if resource[:postsave_cmd]
+      request_args << '-C'
+      request_args << resource[:postsave_cmd]
     end
 
     if resource[:wait]

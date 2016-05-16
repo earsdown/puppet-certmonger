@@ -129,6 +129,14 @@ Puppet::Type.newtype(:certmonger_certificate) do
     desc "The backend being used for storing the certificate."
   end
 
+  newproperty(:presave_cmd) do
+    desc "A command that will be issued before storing the certificate."
+  end
+
+  newproperty(:postsave_cmd) do
+    desc "A command that will be issued after storing the certificate."
+  end
+
   newproperty(:ca_error) do
     desc ("The error info provided in case the CA reported an error with " +
           "the request.")
