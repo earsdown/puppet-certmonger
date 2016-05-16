@@ -105,16 +105,20 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
     if @property_flush[:ensure] == :absent
       getcert(['stop-tracking', '-i', resource[:name]])
     else
-      if @property_hash
+      if not @property_hash.empty?
         if resource[:force_resubmit]
-          getcert(['resubmit', '-i', resource[:name]])
+          request_args = ['resubmit', '-i', resource[:name]]
+          request_args.concat get_base_args(resource)
+          getcert request_args
         end
       else
-        request_args = get_request_args resource
+        request_args = ['request', '-I', resource[:name]]
+        request_args.concat get_base_args(resource)
+        request_args.concat get_request_args(resource)
 
         begin
           Puppet.debug("Issuing getcert command with args: #{request_args}")
-          getcert(request_args)
+          getcert request_args
         rescue Exception => msg
           Puppet.warning("Could not get certificate: #{msg}")
         end
@@ -126,19 +130,13 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
     end
   end
 
-  def get_request_args(resource)
-    request_args = ['request', '-I', resource[:name]]
+  def get_base_args(resource)
+    request_args = []
     if resource[:certfile]
       request_args << '-f'
       request_args << resource[:certfile]
     else
       raise ArgumentError, "An empty value for the certfile is not allowed"
-    end
-    if resource[:keyfile]
-      request_args << '-k'
-      request_args << resource[:keyfile]
-    else
-      raise ArgumentError, "An empty value for the keyfile is not allowed"
     end
     if resource[:ca]
       request_args << '-c'
@@ -161,6 +159,17 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
 
     if resource[:wait]
       request_args << '-w'
+    end
+    return request_args
+  end
+
+  def get_request_args(resource)
+    request_args = []
+    if resource[:keyfile]
+      request_args << '-k'
+      request_args << resource[:keyfile]
+    else
+      raise ArgumentError, "An empty value for the keyfile is not allowed"
     end
     return request_args
   end
