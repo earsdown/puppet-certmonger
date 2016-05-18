@@ -71,12 +71,13 @@ Puppet::Type.newtype(:certmonger_certificate) do
     rejects the request.
   }
 
-  require 'puppet/parameter/boolean'
-
   ensurable
   newparam(:name) do
     desc "The nickname of the certificate request."
     isnamevar
+    validate do |value|
+      raise ArgumentError, "Empty values are not allowed" if value == ""
+    end
   end
 
   newproperty(:certfile) do
@@ -103,6 +104,10 @@ Puppet::Type.newtype(:certmonger_certificate) do
 
   newproperty(:ca) do
     desc "The CA from which the certificate was requested."
+    defaultto "local"
+    validate do |value|
+      raise ArgumentError, "Empty values are not allowed" if value == ""
+    end
   end
 
   newproperty(:hostname) do
@@ -142,26 +147,27 @@ Puppet::Type.newtype(:certmonger_certificate) do
           "the request.")
   end
 
-  newparam(:force_resubmit, :boolean => true,
-           :parent => Puppet::Parameter::Boolean) do
+  newparam(:force_resubmit) do
     desc "If the request is found, force a resubmit operation."
     defaultto :false
+    newvalues(true, false)
   end
 
-  newparam(:wait, :boolean => true, :parent => Puppet::Parameter::Boolean) do
+  newparam(:wait) do
     desc "Try to wait for the certificate to be isued."
     defaultto :true
+    newvalues(true, false)
   end
 
-  newparam(:ignore_ca_errors, :boolean => true,
-           :parent => Puppet::Parameter::Boolean) do
+  newparam(:ignore_ca_errors) do
     desc "Ignore errors related to the CA."
     defaultto :false
+    newvalues(true, false)
   end
 
-  newparam(:cleanup_on_error, :boolean => true,
-           :parent => Puppet::Parameter::Boolean) do
+  newparam(:cleanup_on_error) do
     desc "Stop tracking if an error is reported by the CA."
     defaultto :false
+    newvalues(true, false)
   end
 end
