@@ -1,8 +1,11 @@
-# Certmonger puppet module for integration with IPA CAs
+# Certmonger puppet module
 
-**Request a new certificate from IPA (via certmonger) using a puppet define**
+This puppet modules enable some resources and providers that you can use to
+request certificates using certmonger.
 
-## Simple usage:
+## Request a certificate from IPA using a puppet define
+
+### Simple usage:
 
 ```puppet
 certmonger::request_ipa_cert { 'server-crt':
@@ -13,7 +16,7 @@ certmonger::request_ipa_cert { 'server-crt':
 
 Note: there is no need to use the `certmonger` class, it gets included by the define and has no parameters of its own.
 
-## Parameters:
+### Parameters:
 * `certfile`    (required; String) - Full path of certificate to be managed by certmonger. e.g. `/path/to/certificate.crt`
 * `keyfile`     (required; String) - Full path to private key file to be managed by certmonger. e.g. `/path/to/key.pem`
 * `hostname`    (optional; String) - Hostname to use (appears in subject field of cert). e.g. `webserver.example.com`
@@ -29,15 +32,15 @@ Note: there is no need to use the `certmonger` class, it gets included by the de
 * `profile`     (optional; String) - Ask the CA to process request using the named profile. e.g. `caIPAserviceCert`
 
 
-## Actions:
+### Actions:
 * Submits a certificate request to an IPA server for a new certificate via `ipa-getcert` utility
 
-## **!!! WARNING !!!!**
+### **!!! WARNING !!!!**
 * Changing the location of a `certfile` or `keyfile` can't be done using `ipa-getcert resubmit`,
   which means this module **will take a more aggressive approach**, i.e. it will stop tracking the existing cert,
   delete the key/certfile and submit a brand new request. If the new request fails, bad luck, the old files are gone.
 
-## Fixing file/folder permissions after certificate issuance
+### Fixing file/folder permissions after certificate issuance
 A notable limitation of `ipa-getcert` is that the `postsavecmd` can only take a single command. This means changing file ownership/modes and restarting services requires the use of a separate helper utility. This module includes a creatively named script called `change-perms-restart`, which gets installed by the `certmonger` class as `/usr/local/bin/change-perms-restart`. Usage is as follows:
 ```
 /usr/local/bin/change-perms-restart [ -R] [ -r 'service1 service2' ] [ -s facility.severity ] owner:group:modes:/path/to/file [ ... ]
@@ -48,7 +51,7 @@ A notable limitation of `ipa-getcert` is that the `postsavecmd` can only take a 
 ```
 For example: `change-perms-restart -R -s daemon.notice -r 'httpd postgresql' root:pkiuser:0644:/etc/pki/tls/certs/localhost.crt root:pkiuser:0600:/etc/pki/tls/private/localhost.key`
 
-## Other limitations:
+### Other limitations:
 * The current state is determined by calling a custom shell script (supplied). Not ideal, I know.
 * Only supports file-based certificates (i.e. no support for NSSDB).
 * Does not manage the nickname, IP address, email, keyusage, extusage, etc features.
@@ -68,7 +71,7 @@ For example: `change-perms-restart -R -s daemon.notice -r 'httpd postgresql' roo
   See example below on how to use the supplied `change-perms-restart` script to achieve this and restart httpd as one command.
 * Tested only on CentOS 7.
 
-## More elaborate example:
+### More elaborate example:
 
 ```puppet
   certmonger::request_ipa_cert {'webserver-certificate':
@@ -81,7 +84,53 @@ For example: `change-perms-restart -R -s daemon.notice -r 'httpd postgresql' roo
   }
 ```
 
-## TO DO
+## Request a certificate from IPA using the certmonger provider
+
+This will create a certificate request with the given hostname (which will be
+used in the subject as the CN) and the given principal. It will use the key
+specified by 'keyfile'. And if it succeeds it will track the certificate where
+'certfile' specifies the resource to do so.
+
+```puppet
+  certmonger_certificate { 'my-cert':
+    ensure    => 'present',
+    ca        => 'IPA'
+    certfile  => '/path/to/certs/my-cert.pem',
+    keyfile   => '/path/to/certs/my-key.pem',
+    hostname  => 'hostname.example.com'
+    principal => 'HTTP/hostname.example.com',
+  }
+```
+
+If the certificate already exists it will simply take the values and add it to
+the resource catalog. However, you can tell the provider to resubmit the
+certificate if it already exists. This is done by setting the 'force_resubmit'
+flag. Currently the aforementioned flag is needed if the parameters for the
+request have changed and you wish to resubmit it.
+
+If, for some reason, the CA rejects your request, you can still see the
+certificate resource, and the status will reflect the rejection. So, when
+viewing the resource, you'll see the following:
+
+```puppet
+  certmonger_certificate { 'my-cert':
+    ensure      => 'present',
+    ca          => 'local'
+    certbackend => 'FILE',
+    certfile    => '/path/to/certs/my-cert.pem',
+    keybackend  => 'FILE',
+    keyfile     => '/path/to/certs/my-key.pem',
+    status      => 'CA_REJECTED',
+  }
+```
+
+The default behavior is to throw an error if the CA rejects the request. But
+errors can be ignored with the 'ignore_ca_errors' parameter.
+
+One can also automatically stop tracking the certificate request if it's
+rejected by the CA. This is done by setting the 'cleanup_on_error' flag.
+
+## TO-DO
 * rspec tests and integration with travis-ci
 
 ## Contributing
