@@ -341,5 +341,19 @@ describe Puppet::Type.type(:certmonger_certificate) do
         }.to_not raise_error
       end
     end
+
+    describe :profile do
+      it 'should have a profile parameter' do
+        expect(
+          Puppet::Type.type(:certmonger_certificate).attrtype(:profile)
+        ).to eq(:param)
+      end
+      it 'should validate and pass if valid value' do
+        expect {
+          Puppet::Type.type(:certmonger_certificate).new(
+            :name => name, :ensure => :present, :ca_error => 'some_value')
+        }.to_not raise_error
+      end
+    end
   end
 end

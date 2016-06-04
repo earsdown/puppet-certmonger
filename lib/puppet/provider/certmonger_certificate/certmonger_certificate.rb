@@ -184,6 +184,10 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
     else
       raise ArgumentError, "An empty value for the keyfile is not allowed"
     end
+    if resource[:profile]
+      request_args << '-T'
+      request_args << resource[:profile]
+    end
     return request_args
   end
 
