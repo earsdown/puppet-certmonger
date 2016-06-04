@@ -1,3 +1,7 @@
+[![Puppet
+Forge](http://img.shields.io/puppetforge/v/earsdown/certmonger.svg)](https://forge.puppetlabs.com/earsdown/certmonger)
+[![Build Status](https://travis-ci.org/earsdown/puppet-certmonger.svg?branch=master)](https://travis-ci.org/earsdown/puppet-certmonger)
+
 # Certmonger puppet module
 
 This puppet modules enable some resources and providers that you can use to
