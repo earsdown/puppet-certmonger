@@ -147,6 +147,10 @@ Puppet::Type.newtype(:certmonger_certificate) do
           "the request.")
   end
 
+  newparam(:profile) do
+    desc "ask the CA to process the request using the named profile."
+  end
+
   newparam(:force_resubmit) do
     desc "If the request is found, force a resubmit operation."
     defaultto :false
