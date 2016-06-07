@@ -4,12 +4,10 @@ bundler_args: --without development
 
 rvm:
 - 2.0.0
+- 2.2.3
 env:
   matrix:
-    - PUPPET_GEM_VERSION="~> 3.3"
-    - PUPPET_GEM_VERSION="~> 3.4"
     - PUPPET_GEM_VERSION="~> 3.6"
-    - PUPPET_GEM_VERSION="~> 3.7"
     - PUPPET_GEM_VERSION="~> 3.8"
-    - PUPPET_GEM_VERSION="~> 4.0"
+    - PUPPET_GEM_VERSION="~> 4.5"
 
