@@ -66,9 +66,6 @@ Puppet::Type.newtype(:certmonger_certificate) do
 
     NOTE: for this resource, the certmonger's certificate nickname is
     mandatory, as it's used as the namevar attribute for the Puppet Type.
-
-    TODO: Give the user the option to issue a failure in puppet if the CA
-    rejects the request.
   }
 
   ensurable
