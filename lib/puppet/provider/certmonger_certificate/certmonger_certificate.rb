@@ -163,11 +163,11 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
     end
     if resource[:presave_cmd]
       request_args << '-B'
-      request_args << resource[:presave_cmd]
+      request_args << "\"#{resource[:presave_cmd]}\""
     end
     if resource[:postsave_cmd]
       request_args << '-C'
-      request_args << resource[:postsave_cmd]
+      request_args << "\"#{resource[:postsave_cmd]}\""
     end
 
     if resource[:wait]
