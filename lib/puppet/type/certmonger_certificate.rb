@@ -150,25 +150,25 @@ Puppet::Type.newtype(:certmonger_certificate) do
 
   newparam(:force_resubmit) do
     desc "If the request is found, force a resubmit operation."
-    defaultto :false
+    defaultto false
     newvalues(true, false)
   end
 
   newparam(:wait) do
     desc "Try to wait for the certificate to be isued."
-    defaultto :true
+    defaultto true
     newvalues(true, false)
   end
 
   newparam(:ignore_ca_errors) do
     desc "Ignore errors related to the CA."
-    defaultto :false
+    defaultto false
     newvalues(true, false)
   end
 
   newparam(:cleanup_on_error) do
     desc "Stop tracking if an error is reported by the CA."
-    defaultto :false
+    defaultto false
     newvalues(true, false)
   end
 end
