@@ -126,7 +126,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
         begin
           Puppet.debug("Issuing getcert command with args: #{request_args}")
           getcert request_args
-        rescue Exception => msg
+        rescue Puppet::ExecutionFailure => msg
           Puppet.warning("Could not get certificate: #{msg}")
         end
 
