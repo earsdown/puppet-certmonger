@@ -25,7 +25,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
 
   def self.get_list_of_certs
     output = getcert('list')
-    return parse_cert_list(output)
+    parse_cert_list(output)
   end
 
   def self.parse_cert_list(list_output)
@@ -90,7 +90,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
       current_cert[:ensure] = :present
       cert_list << current_cert
     end
-    return cert_list
+    cert_list
   end
 
   def self.instances
@@ -181,7 +181,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
     if resource[:wait]
       request_args << '-w'
     end
-    return request_args
+    request_args
   end
 
   def get_request_args(resource)
@@ -196,7 +196,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
       request_args << '-T'
       request_args << resource[:profile]
     end
-    return request_args
+    request_args
   end
 
   def refresh(resource)
