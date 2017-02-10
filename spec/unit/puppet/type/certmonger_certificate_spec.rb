@@ -3,10 +3,10 @@ require 'spec_helper'
 # find all parameters that don't have default values and put in here
 # ensure validation occurs
 describe Puppet::Type.type(:certmonger_certificate) do
-  let(:valid_booleans) {[true, false, 'true', 'false']}
+  let(:valid_booleans) { [true, false, 'true', 'false'] }
 
   context 'with empty name' do
-    let(:name) {''}
+    let(:name) { '' }
 
     it 'raises ArgumentError if name is empty' do
       expect do
