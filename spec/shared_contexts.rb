@@ -9,7 +9,7 @@ shared_context :global_hiera_data do
   let(:hiera_data) do
      {
        #"certmonger::scripts::verifyscript" => '',
-     
+
      }
   end
 end
