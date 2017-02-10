@@ -23,7 +23,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
     @property_flush[:ensure] = :absent
   end
 
-  def self.get_list_of_certs
+  def self.list_of_certs
     output = getcert('list')
     parse_cert_list(output)
   end
@@ -95,7 +95,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
   end
 
   def self.instances
-    get_list_of_certs.map do |cert|
+    list_of_certs.map do |cert|
       new(cert)
     end
   end
