@@ -140,8 +140,8 @@ Puppet::Type.newtype(:certmonger_certificate) do
   end
 
   newproperty(:ca_error) do
-    desc ('The error info provided in case the CA reported an error with ' +
-          'the request.')
+    desc 'The error info provided in case the CA reported an error with ' \
+          'the request.'
   end
 
   newparam(:profile) do
