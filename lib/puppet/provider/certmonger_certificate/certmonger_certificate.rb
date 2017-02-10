@@ -82,7 +82,8 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
           current_cert[:presave_cmd] = line.match(%r{pre-save command: (.*)})[1]
         when %r{^\s+post-save command: .*}
           current_cert[:postsave_cmd] = line.match(
-            %r{post-save command: (.*)})[1]
+            %r{post-save command: (.*)}
+          )[1]
         end
       end
     end
