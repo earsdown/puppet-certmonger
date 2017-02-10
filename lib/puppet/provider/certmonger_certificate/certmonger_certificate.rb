@@ -6,7 +6,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
 
   mk_resource_methods
 
-  def initialize(value={})
+  def initialize(value = {})
     super(value)
     @property_flush = {}
   end
