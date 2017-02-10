@@ -34,55 +34,55 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
     current_cert = {}
     output_array.each do |line|
       case line
-      when /^Number of certificates and requests/
+      when %r{^Number of certificates and requests}
         # skip preamble
         next
-      when /^Request ID.*/
+      when %r{^Request ID.*}
         # New certificate info. Append previous one.
         if current_cert[:name]
           current_cert[:ensure] = :present
           cert_list << current_cert
           current_cert = {}
         end
-        current_cert[:name] = line.match(/Request ID '(.+)':/)[1]
+        current_cert[:name] = line.match(%r{Request ID '(.+)':})[1]
       else
         if not current_cert[:name]
           raise Puppet::Error, "Invalid data coming from 'getcert list'."
         end
 
         case line
-        when /^\s+status: .*/
-          current_cert[:status] = line.match(/status: (.+)/)[1]
-        when /^\s+key pair storage: .*/
-          key_match = line.match(/type=([A-Z]+),.*location='(.+?)'/)
+        when %r{^\s+status: .*}
+          current_cert[:status] = line.match(%r{status: (.+)})[1]
+        when %r{^\s+key pair storage: .*}
+          key_match = line.match(%r{type=([A-Z]+),.*location='(.+?)'})
           current_cert[:keybackend] = key_match[1]
           current_cert[:keyfile] = key_match[2]
-        when /^\s+certificate: .*/
-          cert_match = line.match(/type=([A-Z]+),.*location='(.+?)'/)
+        when %r{^\s+certificate: .*}
+          cert_match = line.match(%r{type=([A-Z]+),.*location='(.+?)'})
           current_cert[:certbackend] = cert_match[1]
           current_cert[:certfile] = cert_match[2]
-        when /^\s+CA: .*/
-          current_cert[:ca] = line.match(/CA: (.*)/)[1]
-        when /^\s+subject: .*/
+        when %r{^\s+CA: .*}
+          current_cert[:ca] = line.match(%r{CA: (.*)})[1]
+        when %r{^\s+subject: .*}
           # FIXME(jaosorior): This is hacky! Use an actual library to parse
           # the subject.
-          subj_match = line.match(/subject: (.*)/)
+          subj_match = line.match(%r{subject: (.*)})
           if subj_match[1].empty?
             current_cert[:hostname] = ''
           else
-            cn_match = line.match(/subject: .*CN=(.*?)(?:,.*|$)/)
+            cn_match = line.match(%r{subject: .*CN=(.*?)(?:,.*|$)})
             current_cert[:hostname] = cn_match[1]
           end
-        when /^\s+dns: .*/
-           dns_raw = line.match(/dns: (.*)/)[1]
+        when %r{^\s+dns: .*}
+           dns_raw = line.match(%r{dns: (.*)})[1]
            current_cert[:dnsname] = dns_raw.split(',')
-        when /^\s+ca-error: .*/
-          current_cert[:ca_error] = line.match(/ca-error: (.*)/)[1]
-        when /^\s+pre-save command: .*/
-          current_cert[:presave_cmd] = line.match(/pre-save command: (.*)/)[1]
-        when /^\s+post-save command: .*/
+        when %r{^\s+ca-error: .*}
+          current_cert[:ca_error] = line.match(%r{ca-error: (.*)})[1]
+        when %r{^\s+pre-save command: .*}
+          current_cert[:presave_cmd] = line.match(%r{pre-save command: (.*)})[1]
+        when %r{^\s+post-save command: .*}
           current_cert[:postsave_cmd] = line.match(
-            /post-save command: (.*)/)[1]
+            %r{post-save command: (.*)})[1]
         end
       end
     end
