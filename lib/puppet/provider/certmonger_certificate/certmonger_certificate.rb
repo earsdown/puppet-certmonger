@@ -216,7 +216,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
       end
       if not resource[:ignore_ca_errors]
         raise Puppet::Error, ('Could not get certificate: ' +
-                              "#{@property_hash[:ca_error]}")
+                              (@property_hash[:ca_error]).to_s)
       end
     end
   end
