@@ -95,7 +95,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
   end
 
   def self.instances
-    get_list_of_certs.collect do |cert|
+    get_list_of_certs.map do |cert|
       new(cert)
     end
   end
