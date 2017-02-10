@@ -1,5 +1,5 @@
 Puppet::Type.newtype(:certmonger_certificate) do
-  @doc = %q{Creates a new certificate using certmonger.
+  @doc = "Creates a new certificate using certmonger.
     The CA that is used to create the certificate depends
     on the provider.
 
@@ -66,7 +66,7 @@ Puppet::Type.newtype(:certmonger_certificate) do
 
     NOTE: for this resource, the certmonger's certificate nickname is
     mandatory, as it's used as the namevar attribute for the Puppet Type.
-  }
+  "
 
   ensurable
   newparam(:name) do
