@@ -115,7 +115,7 @@ Puppet::Type.newtype(:certmonger_certificate) do
     desc 'The requested principal name in the certificate.'
   end
 
-  newproperty(:dnsname, :array_matching => :all) do
+  newproperty(:dnsname, array_matching: :all) do
     desc 'The DNS name used in the subjectAltNames for the certificate.'
   end
 

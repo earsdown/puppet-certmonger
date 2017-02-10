@@ -1,8 +1,8 @@
 Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
   desc 'Provider for certmonger certificates.'
 
-  confine :exists => '/usr/sbin/certmonger'
-  commands :getcert => '/bin/getcert'
+  confine exists: '/usr/sbin/certmonger'
+  commands getcert: '/bin/getcert'
 
   mk_resource_methods
 

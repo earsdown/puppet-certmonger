@@ -10,8 +10,8 @@ describe Puppet::Type.type(:certmonger_certificate) do
 
     it 'should raise ArgumentError if name is empty' do
       expect {
-        Puppet::Type.type(:certmonger_certificate).new(:name => name,
-                                                       :ensure => :present)
+        Puppet::Type.type(:certmonger_certificate).new(name: name,
+                                                       ensure: :present)
       }.to raise_error(Puppet::Error)
     end
   end
@@ -23,7 +23,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
 
     let(:type_instance) do
       #
-      Puppet::Type.type(:certmonger_certificate).new(:name => name)
+      Puppet::Type.type(:certmonger_certificate).new(name: name)
     end
 
 
@@ -35,8 +35,8 @@ describe Puppet::Type.type(:certmonger_certificate) do
       end
       it 'should validate and pass if valid value' do
         expect {
-          Puppet::Type.type(:certmonger_certificate).new(:name => name,
-                                                         :ensure => :present)
+          Puppet::Type.type(:certmonger_certificate).new(name: name,
+                                                         ensure: :present)
         }.to_not raise_error
       end
     end
@@ -50,18 +50,18 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should raise ArgumentError if not valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name,
-            :ensure => :present,
-            :force_resubmit => 'some_bad_value')
+            name: name,
+            ensure: :present,
+            force_resubmit: 'some_bad_value')
         }.to raise_error(Puppet::Error)
       end
       it 'should validate and pass if valid value' do
         valid_booleans.each do |value|
           expect {
             Puppet::Type.type(:certmonger_certificate).new(
-              :name => name,
-              :ensure => :present,
-              :force_resubmit => value)
+              name: name,
+              ensure: :present,
+              force_resubmit: value)
           }.to_not raise_error
         end
       end
@@ -76,18 +76,18 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should raise ArgumentError if not valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name,
-            :ensure => :present,
-            :wait => 'some_bad_value')
+            name: name,
+            ensure: :present,
+            wait: 'some_bad_value')
         }.to raise_error(Puppet::Error)
       end
       it 'should validate and pass if valid value' do
         valid_booleans.each do |value|
           expect {
             Puppet::Type.type(:certmonger_certificate).new(
-              :name => name,
-              :ensure => :present,
-              :wait => value)
+              name: name,
+              ensure: :present,
+              wait: value)
           }.to_not raise_error
         end
       end
@@ -103,18 +103,18 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should raise ArgumentError if not valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name,
-            :ensure => :present,
-            :ignore_ca_errors => 'some_bad_value')
+            name: name,
+            ensure: :present,
+            ignore_ca_errors: 'some_bad_value')
         }.to raise_error(Puppet::Error)
       end
       it 'should validate and pass if valid value' do
         valid_booleans.each do |value|
           expect {
             Puppet::Type.type(:certmonger_certificate).new(
-              :name => name,
-              :ensure => :present,
-              :ignore_ca_errors => value)
+              name: name,
+              ensure: :present,
+              ignore_ca_errors: value)
           }.to_not raise_error
         end
       end
@@ -130,18 +130,18 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should raise ArgumentError if not valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name,
-            :ensure => :present,
-            :cleanup_on_error => 'some_bad_value')
+            name: name,
+            ensure: :present,
+            cleanup_on_error: 'some_bad_value')
         }.to raise_error(Puppet::Error)
       end
       it 'should validate and pass if valid value' do
         valid_booleans.each do |value|
           expect {
             Puppet::Type.type(:certmonger_certificate).new(
-              :name => name,
-              :ensure => :present,
-              :cleanup_on_error => value)
+              name: name,
+              ensure: :present,
+              cleanup_on_error: value)
           }.to_not raise_error
         end
       end
@@ -156,16 +156,16 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should raise ArgumentError if not valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name,
-            :ensure => :present,
-            :certfile => '')
+            name: name,
+            ensure: :present,
+            certfile: '')
         }.to raise_error(Puppet::Error)
       end
       it 'should validate and pass if valid value' do
         expect {Puppet::Type.type(:certmonger_certificate).new(
-          :name => name,
-          :ensure => :present,
-          :certfile => 'some_value')
+          name: name,
+          ensure: :present,
+          certfile: 'some_value')
         }.to_not raise_error
       end
     end
@@ -179,17 +179,17 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should raise ArgumentError if not valid value' do
         expect do
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name,
-            :ensure => :present,
-            :keyfile => '')
+            name: name,
+            ensure: :present,
+            keyfile: '')
         end.to raise_error(Puppet::Error)
       end
       it 'should validate and pass if valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name,
-            :ensure => :present,
-            :keyfile => 'some_value')
+            name: name,
+            ensure: :present,
+            keyfile: 'some_value')
         }.to_not raise_error
       end
     end
@@ -203,15 +203,15 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should raise ArgumentError if not valid value' do
         expect do
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name,
-            :ensure => :present,
-            :ca => '')
+            name: name,
+            ensure: :present,
+            ca: '')
         end.to raise_error(Puppet::Error)
       end
       it 'should validate and pass if valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name, :ensure => :present, :ca => 'some_value')
+            name: name, ensure: :present, ca: 'some_value')
         }.to_not raise_error
       end
     end
@@ -225,7 +225,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should validate and pass if valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name, :ensure => :present, :hostname => 'some_value')
+            name: name, ensure: :present, hostname: 'some_value')
         }.to_not raise_error
       end
     end
@@ -239,7 +239,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should validate and pass if valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name, :ensure => :present, :principal => 'some_value')
+            name: name, ensure: :present, principal: 'some_value')
         }.to_not raise_error
       end
     end
@@ -253,7 +253,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should validate and pass if valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name, :ensure => :present, :dnsname => 'some_value')
+            name: name, ensure: :present, dnsname: 'some_value')
         }.to_not raise_error
       end
     end
@@ -267,7 +267,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should validate and pass if valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name, :ensure => :present, :status => 'some_value')
+            name: name, ensure: :present, status: 'some_value')
         }.to_not raise_error
       end
     end
@@ -281,7 +281,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should validate and pass if valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name, :ensure => :present, :keybackend => 'some_value')
+            name: name, ensure: :present, keybackend: 'some_value')
         }.to_not raise_error
       end
     end
@@ -295,7 +295,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should validate and pass if valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name, :ensure => :present, :certbackend => 'some_value')
+            name: name, ensure: :present, certbackend: 'some_value')
         }.to_not raise_error
       end
     end
@@ -309,7 +309,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should validate and pass if valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name, :ensure => :present, :presave_cmd => 'some_value')
+            name: name, ensure: :present, presave_cmd: 'some_value')
         }.to_not raise_error
       end
     end
@@ -323,7 +323,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should validate and pass if valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name, :ensure => :present, :postsave_cmd => 'some_value')
+            name: name, ensure: :present, postsave_cmd: 'some_value')
         }.to_not raise_error
       end
     end
@@ -337,7 +337,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should validate and pass if valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name, :ensure => :present, :ca_error => 'some_value')
+            name: name, ensure: :present, ca_error: 'some_value')
         }.to_not raise_error
       end
     end
@@ -351,7 +351,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
       it 'should validate and pass if valid value' do
         expect {
           Puppet::Type.type(:certmonger_certificate).new(
-            :name => name, :ensure => :present, :ca_error => 'some_value')
+            name: name, ensure: :present, ca_error: 'some_value')
         }.to_not raise_error
       end
     end
