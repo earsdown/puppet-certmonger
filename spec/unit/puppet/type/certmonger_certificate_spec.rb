@@ -36,7 +36,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
         expect do
           Puppet::Type.type(:certmonger_certificate).new(name: name,
                                                          ensure: :present)
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
 
@@ -61,7 +61,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
               name: name,
               ensure: :present,
               force_resubmit: value)
-          end.to_not raise_error
+          end.not_to raise_error
         end
       end
     end
@@ -87,7 +87,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
               name: name,
               ensure: :present,
               wait: value)
-          end.to_not raise_error
+          end.not_to raise_error
         end
       end
     end
@@ -114,7 +114,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
               name: name,
               ensure: :present,
               ignore_ca_errors: value)
-          end.to_not raise_error
+          end.not_to raise_error
         end
       end
     end
@@ -141,7 +141,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
               name: name,
               ensure: :present,
               cleanup_on_error: value)
-          end.to_not raise_error
+          end.not_to raise_error
         end
       end
     end
@@ -165,7 +165,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
           name: name,
           ensure: :present,
           certfile: 'some_value')
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
 
@@ -189,7 +189,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
             name: name,
             ensure: :present,
             keyfile: 'some_value')
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
 
@@ -211,7 +211,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
         expect do
           Puppet::Type.type(:certmonger_certificate).new(
             name: name, ensure: :present, ca: 'some_value')
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
 
@@ -225,7 +225,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
         expect do
           Puppet::Type.type(:certmonger_certificate).new(
             name: name, ensure: :present, hostname: 'some_value')
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
 
@@ -239,7 +239,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
         expect do
           Puppet::Type.type(:certmonger_certificate).new(
             name: name, ensure: :present, principal: 'some_value')
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
 
@@ -253,7 +253,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
         expect do
           Puppet::Type.type(:certmonger_certificate).new(
             name: name, ensure: :present, dnsname: 'some_value')
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
 
@@ -267,7 +267,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
         expect do
           Puppet::Type.type(:certmonger_certificate).new(
             name: name, ensure: :present, status: 'some_value')
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
 
@@ -281,7 +281,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
         expect do
           Puppet::Type.type(:certmonger_certificate).new(
             name: name, ensure: :present, keybackend: 'some_value')
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
 
@@ -295,7 +295,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
         expect do
           Puppet::Type.type(:certmonger_certificate).new(
             name: name, ensure: :present, certbackend: 'some_value')
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
 
@@ -309,7 +309,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
         expect do
           Puppet::Type.type(:certmonger_certificate).new(
             name: name, ensure: :present, presave_cmd: 'some_value')
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
 
@@ -323,7 +323,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
         expect do
           Puppet::Type.type(:certmonger_certificate).new(
             name: name, ensure: :present, postsave_cmd: 'some_value')
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
 
@@ -337,7 +337,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
         expect do
           Puppet::Type.type(:certmonger_certificate).new(
             name: name, ensure: :present, ca_error: 'some_value')
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
 
@@ -351,7 +351,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
         expect do
           Puppet::Type.type(:certmonger_certificate).new(
             name: name, ensure: :present, ca_error: 'some_value')
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
   end
