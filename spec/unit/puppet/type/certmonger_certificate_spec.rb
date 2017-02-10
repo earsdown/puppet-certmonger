@@ -18,7 +18,7 @@ describe Puppet::Type.type(:certmonger_certificate) do
 
   context 'with valid name' do
     let(:name) do
-       'some_name'
+      'some_name'
     end
 
     let(:type_instance) do

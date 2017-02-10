@@ -74,8 +74,8 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
             current_cert[:hostname] = cn_match[1]
           end
         when %r{^\s+dns: .*}
-           dns_raw = line.match(%r{dns: (.*)})[1]
-           current_cert[:dnsname] = dns_raw.split(',')
+          dns_raw = line.match(%r{dns: (.*)})[1]
+          current_cert[:dnsname] = dns_raw.split(',')
         when %r{^\s+ca-error: .*}
           current_cert[:ca_error] = line.match(%r{ca-error: (.*)})[1]
         when %r{^\s+pre-save command: .*}
