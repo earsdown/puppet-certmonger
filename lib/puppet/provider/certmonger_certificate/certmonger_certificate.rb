@@ -139,18 +139,14 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
 
   def get_base_args(resource)
     request_args = []
-    if resource[:certfile]
-      request_args << '-f'
-      request_args << resource[:certfile]
-    else
-      raise ArgumentError, 'An empty value for the certfile is not allowed'
-    end
-    if resource[:ca]
-      request_args << '-c'
-      request_args << resource[:ca]
-    else
-      raise ArgumentError, 'You need to specify a CA'
-    end
+    raise ArgumentError, 'An empty value for the certfile is not allowed' unless resource[:certfile]
+    request_args << '-f'
+    request_args << resource[:certfile]
+
+    raise ArgumentError, 'You need to specify a CA' unless resource[:ca]
+    request_args << '-c'
+    request_args << resource[:ca]
+
     if resource[:hostname]
       request_args << '-N'
       request_args << "CN=#{resource[:hostname]}"
@@ -185,12 +181,10 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
 
   def get_request_args(resource)
     request_args = []
-    if resource[:keyfile]
-      request_args << '-k'
-      request_args << resource[:keyfile]
-    else
-      raise ArgumentError, 'An empty value for the keyfile is not allowed'
-    end
+    raise ArgumentError, 'An empty value for the keyfile is not allowed' unless resource[:keyfile]
+    request_args << '-k'
+    request_args << resource[:keyfile]
+
     if resource[:profile]
       request_args << '-T'
       request_args << resource[:profile]
@@ -207,14 +201,10 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
   end
 
   def cleanup(resource)
-    if @property_hash[:ca_error]
-      if resource[:cleanup_on_error]
-        getcert(['stop-tracking', '-i', resource[:name]])
-      end
-      unless resource[:ignore_ca_errors]
-        raise Puppet::Error, ('Could not get certificate: ' +
-                              (@property_hash[:ca_error]).to_s)
-      end
+    return unless @property_hash[:ca_error]
+    if resource[:cleanup_on_error]
+      getcert(['stop-tracking', '-i', resource[:name]])
     end
+    raise Puppet::Error, "Could not get certificate: #{@property_hash[:ca_error]}" unless resource[:ignore_ca_errors]
   end
 end
