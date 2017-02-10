@@ -1,8 +1,8 @@
 Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
-  desc "Provider for certmonger certificates."
+  desc 'Provider for certmonger certificates.'
 
-  confine :exists => "/usr/sbin/certmonger"
-  commands :getcert => "/bin/getcert"
+  confine :exists => '/usr/sbin/certmonger'
+  commands :getcert => '/bin/getcert'
 
   mk_resource_methods
 
@@ -142,13 +142,13 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
       request_args << '-f'
       request_args << resource[:certfile]
     else
-      raise ArgumentError, "An empty value for the certfile is not allowed"
+      raise ArgumentError, 'An empty value for the certfile is not allowed'
     end
     if resource[:ca]
       request_args << '-c'
       request_args << resource[:ca]
     else
-      raise ArgumentError, "You need to specify a CA"
+      raise ArgumentError, 'You need to specify a CA'
     end
     if resource[:hostname]
       request_args << '-N'
@@ -190,7 +190,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
       request_args << '-k'
       request_args << resource[:keyfile]
     else
-      raise ArgumentError, "An empty value for the keyfile is not allowed"
+      raise ArgumentError, 'An empty value for the keyfile is not allowed'
     end
     if resource[:profile]
       request_args << '-T'
@@ -205,7 +205,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
       @property_hash = self.class.parse_cert_list(output)[0]
     rescue
       raise Puppet::Error, ("The certificate '#{resource[:name]}' wasn't " +
-                            "found in the list.")
+                            'found in the list.')
     end
   end
 
@@ -215,7 +215,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
         getcert(['stop-tracking', '-i', resource[:name]])
       end
       if not resource[:ignore_ca_errors]
-        raise Puppet::Error, ("Could not get certificate: " +
+        raise Puppet::Error, ('Could not get certificate: ' +
                               "#{@property_hash[:ca_error]}")
       end
     end

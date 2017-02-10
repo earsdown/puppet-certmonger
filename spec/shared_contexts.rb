@@ -17,14 +17,14 @@ end
 shared_context :hiera do
     # example only,
     let(:hiera_data) do
-        {:some_key => "some_value" }
+        {:some_key => 'some_value' }
     end
 end
 
 shared_context :linux_hiera do
     # example only,
     let(:hiera_data) do
-        {:some_key => "some_value" }
+        {:some_key => 'some_value' }
     end
 end
 
@@ -32,7 +32,7 @@ end
 shared_context :windows_hiera do
     # example only,
     let(:hiera_data) do
-        {:some_key => "some_value" }
+        {:some_key => 'some_value' }
     end
 end
 
