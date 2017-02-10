@@ -201,13 +201,11 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
   end
 
   def refresh(resource)
-    begin
-      output = getcert(['list', '-i', resource[:name]])
-      @property_hash = self.class.parse_cert_list(output)[0]
-    rescue
-      raise Puppet::Error, ("The certificate '#{resource[:name]}' wasn't " \
-                            'found in the list.')
-    end
+    output = getcert(['list', '-i', resource[:name]])
+    @property_hash = self.class.parse_cert_list(output)[0]
+  rescue
+    raise Puppet::Error, ("The certificate '#{resource[:name]}' wasn't " \
+                          'found in the list.')
   end
 
   def cleanup(resource)
