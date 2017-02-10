@@ -179,9 +179,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
       request_args << resource[:postsave_cmd]
     end
 
-    if resource[:wait]
-      request_args << '-w'
-    end
+    request_args << '-w' if resource[:wait]
     request_args
   end
 
