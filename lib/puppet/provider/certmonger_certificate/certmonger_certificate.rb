@@ -46,7 +46,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
         end
         current_cert[:name] = line.match(%r{Request ID '(.+)':})[1]
       else
-        if not current_cert[:name]
+        if !(current_cert[:name])
           raise Puppet::Error, "Invalid data coming from 'getcert list'."
         end
 
@@ -111,7 +111,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
     if @property_flush[:ensure] == :absent
       getcert(['stop-tracking', '-i', resource[:name]])
     else
-      if not @property_hash.empty?
+      if !@property_hash.empty?
         if resource[:force_resubmit]
           request_args = ['resubmit', '-i', resource[:name]]
           request_args.concat get_base_args(resource)
@@ -214,7 +214,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
       if resource[:cleanup_on_error]
         getcert(['stop-tracking', '-i', resource[:name]])
       end
-      if not resource[:ignore_ca_errors]
+      if !(resource[:ignore_ca_errors])
         raise Puppet::Error, ('Could not get certificate: ' +
                               (@property_hash[:ca_error]).to_s)
       end
