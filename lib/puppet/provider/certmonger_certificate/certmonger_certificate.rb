@@ -102,7 +102,7 @@ Puppet::Type.type(:certmonger_certificate).provide :certmonger_certificate do
 
   def self.prefetch(resources)
     instances.each do |prov|
-      if resource = resources[prov.name]
+      if (resource = resources[prov.name])
         resource.provider = prov
       end
     end
