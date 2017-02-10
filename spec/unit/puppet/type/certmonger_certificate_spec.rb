@@ -26,7 +26,6 @@ describe Puppet::Type.type(:certmonger_certificate) do
       Puppet::Type.type(:certmonger_certificate).new(name: name)
     end
 
-
     describe :name do
       it 'has a name parameter' do
         expect(
