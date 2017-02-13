@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe 'certmonger' do
-  it 'should include certmonger' do
-    should contain_package('certmonger')
-    should contain_service('certmonger')
+  it 'includes certmonger' do
+    is_expected.to contain_package('certmonger')
+    is_expected.to contain_service('certmonger')
   end
 end
