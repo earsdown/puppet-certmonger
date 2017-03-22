@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts ":f:k:N:K:D:B:C:w:" opt; do
+while getopts ":f:k:N:K:D:u:U:B:C:w:" opt; do
   case "$opt" in
     f) certfile="$OPTARG"
        ;;
@@ -11,6 +11,10 @@ while getopts ":f:k:N:K:D:B:C:w:" opt; do
     K) principal="$OPTARG"
        ;;
     D) dns="$OPTARG"
+       ;;
+    u) usage="$OPTARG"
+       ;;
+    U) eku="$OPTARG"
        ;;
     B) presavecmd="$OPTARG"
        ;;
@@ -115,4 +119,44 @@ if echo "$output" | grep -q '^\s*post-save command:' && [ -n "$postsavecmd" ]; t
   fi
 elif [ -n "$postsavecmd" ]; then
   exit 7
+fi
+
+# Are the expected Key Usage attributes the same as whats already in the certrequest?
+if echo "$output" | grep -q '\s*key usage:' && [ -n "$usage" ]; then
+  # take output of ipa-getcert list | grep key usage | strip off the 'key usage:' part | replace commas with newlines | 
+  #                                    sort/dedup the list | replace newlines with a comma | strip off any leading or ending commas
+  output_usage="$(echo "$output" | grep '^\s*key usage:' | sed -e 's/^\s*key usage:\s*//g' | tr -s ',' '\n' | \
+                sort | uniq | tr -s '\n' ',' | sed -e 's/,\+$//g;s/^,\+//g')"
+
+  # take contents of usage argument | replace consecutive commas or spaces with a single comma | replace commas with newlines | 
+  #                                    sort/dedup the list | replace newlines with a comma | strip off any leading or ending commas
+  fixed_usage="$(echo "$usage" | sed -e 's/[, ]\+/,/g' | tr -s ',' '\n' | \
+                sort | uniq | tr -s '\n' ',' | sed -e 's/,\+$//g;s/^,\+//g')"
+
+  if [ "$output_usage" != "$fixed_usage" ]; then
+    exit 8
+  fi
+
+elif [ -n "$usage" ]; then
+  exit 8
+fi
+
+# Are the expected Extended Key Usage/EKU attributes the same as whats already in the certrequest?
+if echo "$output" | grep -q '\s*eku:' && [ -n "$eku" ]; then
+  # take output of ipa-getcert list | grep eku | strip off the 'eku:' part | replace commas with newlines | 
+  #                                    sort/dedup the list | replace newlines with a comma | strip off any leading or ending commas
+  output_eku="$(echo "$output" | grep '^\s*eku:' | sed -e 's/^\s*eku:\s*//g' | tr -s ',' '\n' | \
+                sort | uniq | tr -s '\n' ',' | sed -e 's/,\+$//g;s/^,\+//g')"
+
+  # take contents of eku argument | replace consecutive commas or spaces with a single comma | replace commas with newlines | 
+  #                                    sort/dedup the list | replace newlines with a comma | strip off any leading or ending commas
+  fixed_eku="$(echo "$eku" | sed -e 's/[, ]\+/,/g' | tr -s ',' '\n' | \
+                sort | uniq | tr -s '\n' ',' | sed -e 's/,\+$//g;s/^,\+//g')"
+
+  if [ "$output_eku" != "$fixed_eku" ]; then
+    exit 9
+  fi
+
+elif [ -n "$eku" ]; then
+  exit 9
 fi

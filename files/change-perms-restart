@@ -8,19 +8,22 @@ case "$(id -nu)" in
 esac
 
 usage () {
-  echo "Utility to change file/folder owner/group/mode and restart a list of services. For use with ipa-getcert as a post-save command." >&2
-  echo "Usage: $(basename $0) [ -R] [ -r 'service1 service2' ] [ -s facility.severity ] owner:group:modes:/path/to/file [ ... ]" >&2
+  echo "Utility to change file/folder owner/group/mode and reload/restart a list of services. For use with ipa-getcert as a post-save command." >&2
+  echo "Usage: $(basename $0) [ -R] [ -r 'service1 service2' ] [ -t 'service3 service4' ] [ -s facility.severity ] owner:group:modes:/path/to/file [ ... ]" >&2
   echo "   -R     change ownership/group/modes recursively (e.g. when specifying a folder)" >&2
-  echo "   -r     space separated list of services to restart via systemctl" >&2
+  echo "   -r     space separated list of services to reload via systemctl" >&2
+  echo "   -t     space separated list of services to restart via systemctl" >&2
   echo "   -s     log output (if any) to syslog with specified facility/severity" >&2
-  echo "Example: $(basename $0) -R -s daemon.notice -r 'httpd postgresql' root:pkiuser:0644:/etc/pki/tls/certs/localhost.crt root:pkiuser:0600:/etc/pki/tls/private/localhost.key" >&2
+  echo "Example: $(basename $0) -R -s daemon.notice -r 'httpd rsyslog' -t 'postfix postgresql' root:pkiuser:0644:/etc/pki/tls/certs/localhost.crt root:pkiuser:0600:/etc/pki/tls/private/localhost.key" >&2
 }
 
-while getopts ":Rr:s:" opt; do
+while getopts ":Rr:s:t:" opt; do
   case "$opt" in
     R) options="-R"
        ;;
-    r) services="$OPTARG"
+    r) services_reload="$OPTARG"
+       ;;
+    t) services_restart="$OPTARG"
        ;;
     s) syslog="$OPTARG"
        ;;
@@ -51,6 +54,9 @@ for i in $@; do
   log "$(chmod $options $mode $file 2>&1)"
 done
 
-for service in $services; do
+for service in $services_restart; do
   log "$(systemctl restart $service 2>&1)"
+done
+for service in $services_reload; do
+  log "$(systemctl reload $service 2>&1)"
 done

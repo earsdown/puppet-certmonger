@@ -31,6 +31,16 @@ Note: there is no need to use the `certmonger` class, it gets included by the de
                                      e.g. `ssl.example.com webserver01.example.com`
                                      e.g. `ssl.example.com, webserver01.example.com`
                                      e.g. `["ssl.example.com","webserver01.example.com"]`
+* `eku`         (optional; String or Array) - Extended Key Usage attributes to be present in the certificate request.
+                                     Can be a string (use commas or spaces to separate values) or an array.
+                                     e.g. `id-kp-clientAuth id-kp-serverAuth`
+                                     e.g. `id-kp-clientAuth, id-kp-serverAuth`
+                                     e.g. `["id-kp-clientAuth","id-kp-serverAuth"]`
+* `usage`       (optional; String or Array) - Key Usage attributes to be present in the certificate request.
+                                     Can be a string (use commas or spaces to separate values) or an array.
+                                     e.g. `digitalSignature nonRepudiation keyEncipherment`
+                                     e.g. `digitalSignature, nonRepudiation, keyEncipherment`
+                                     e.g. `["digitalSignature", "nonRepudiation", "keyEncipherment"]`
 * `presavecmd`  (optional; String) - Command certmonger should run before saving the certificate
 * `postsavecmd` (optional; String) - Command certmonger should run after saving the certificate
 * `profile`     (optional; String) - Ask the CA to process request using the named profile. e.g. `caIPAserviceCert`
@@ -47,19 +57,20 @@ Note: there is no need to use the `certmonger` class, it gets included by the de
 ### Fixing file/folder permissions after certificate issuance
 A notable limitation of `ipa-getcert` is that the `postsavecmd` can only take a single command. This means changing file ownership/modes and restarting services requires the use of a separate helper utility. This module includes a creatively named script called `change-perms-restart`, which gets installed by the `certmonger` class as `/usr/local/bin/change-perms-restart`. Usage is as follows:
 ```
-/usr/local/bin/change-perms-restart [ -R] [ -r 'service1 service2' ] [ -s facility.severity ] owner:group:modes:/path/to/file [ ... ]
+/usr/local/bin/change-perms-restart [ -R] [ -r 'service1 service2' ] [ -t 'service3 service4' ] [ -s facility.severity ] owner:group:modes:/path/to/file [ ... ]
 
    -R     change ownership/group/modes recursively (e.g. when specifying a folder)
-   -r     space separated list of services to restart via systemctl
+   -r     space separated list of services to reload via systemctl
+   -t     space separated list of services to restart via systemctl
    -s     log output (if any) to syslog with specified facility/severity
 ```
-For example: `change-perms-restart -R -s daemon.notice -r 'httpd postgresql' root:pkiuser:0644:/etc/pki/tls/certs/localhost.crt root:pkiuser:0600:/etc/pki/tls/private/localhost.key`
+For example: `change-perms-restart -R -s daemon.notice  -r 'httpd rsyslog' -t 'postfix postgresql' root:pkiuser:0644:/etc/pki/tls/certs/localhost.crt root:pkiuser:0600:/etc/pki/tls/private/localhost.key`
 
 ### Other limitations:
 * The current state is determined by calling a custom shell script (supplied). Not ideal, I know.
 * Only supports file-based certificates (i.e. no support for NSSDB).
-* Does not manage the nickname, IP address, email, keyusage, extusage, etc features.
-* Only manages subject, dns (subjectAltNames), principal, pre/post save commands.
+* Does not manage the nickname, IP address, email, etc features.
+* Only manages subject, dns (subjectAltNames), key usage, eku, principal, pre/post save commands.
 * Only manages the principal if it appears in the issued certificate - which depends on your CA profile.
 * Subject is hardcoded to `CN=$hostname`.
 * Only works if being run on a system already joined to an IPA domain, and only works against IPA CAs.
@@ -145,3 +156,4 @@ rejected by the CA. This is done by setting the 'cleanup_on_error' flag.
 Honorable mention goes out to:
 * Rob Crittenden for his work on https://github.com/rcritten/puppet-certmonger, which was used as inspiration for this module.
 * Juan Antonio Osorio for his work on the certmonger type/provider and setting up rpsec tests/travis-ci integration.
+* Alex J Fisher for fixing rubocop violations
