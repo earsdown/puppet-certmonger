@@ -90,7 +90,7 @@ For example: `change-perms-restart -R -s daemon.notice  -r 'httpd rsyslog' -t 'p
 
 ```puppet
   certmonger::request_ipa_cert {'webserver-certificate':
-     server      => "${fqdn}",
+     hostname    => "${fqdn}",
      principal   => "HTTP/${fqdn}",
      keyfile     => "/etc/pki/tls/private/server.key",
      certfile    => "/etc/pki/tls/certs/server.crt",
